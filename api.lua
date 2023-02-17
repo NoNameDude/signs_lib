@@ -795,6 +795,132 @@ function signs_lib.glow(pos, node, puncher)
 	end
 end
 
+--code by NoNameDude simple filter system
+function signs_lib.check_for_insults(text)
+    local filter = {
+        --English
+        "fuck",
+        "bitch",
+        "shit",
+        "shitstorm",
+        "shitstain",
+        "dick",
+        "cock",
+        "nigger",
+        "faggot",
+        "gay",
+        "whore",
+        "incel",
+        "cuck",
+        "fucker",
+        "motherfucker",
+        "retard",
+        "penis",
+        "vagina",
+        "vag",
+        "penile",
+        "autistic",
+        "autist",
+        "pussy",
+        "masturbate",
+        "sex",
+        "intercourse",
+        "asshole",
+        "asswhipe",
+        "cocksucker",
+        "bitchass",
+        "titties",
+        "tits",
+        "boobs",
+        "breast",
+        "breasts",
+        "degenerate",
+        "bastard",
+        "nazi",
+        
+        --Russian
+        "сука",
+        "блять",
+        "бля",
+        "мля",
+        "блин",
+        "твою мать",
+        "твою же мать",
+        "дибил",
+        "аут",
+        "аутист",
+        "манда",
+        "ебать",
+        "ебало закрой",
+        "заебал",
+        "отвали",
+        "заткнись",
+        "мудак",
+        "хуй",
+        "охуел?",
+        "это пиздец",
+        "пизда",
+        "сволочь",
+        "жопа",
+        "гавно",
+        "лох",
+        "гандон",
+        "ублюдок",
+        "срать",
+        "мне насрать",
+        "мне похуй",
+        "черт",
+        "трахнуть",
+        "трахнул",
+        "дегенерат",
+        "хрен",
+        "хуй",
+        "дерьмо",
+        "пошел к чорту",
+        "мне плевать",
+        "херня",
+        "хрень",
+        "один хрен",
+        "ни хрена",
+        "ну его нахрен",
+        "иди нахер",
+        "нахрен",
+        "пошёл",
+        "нахер",
+        "нахрен",
+        
+        --German
+        "arschloch",
+        "arsch",
+        "schwanz",
+        "wichser",
+        "schlampe",
+        "hurre",
+        "fick dich",
+        "mutterficker",
+        "hurensohn",
+        "mastubiren",
+        "scheide",
+        "geschlechtsverkehr",
+        "fotze",
+        "missgeburt",
+        "missgeburt",
+        "vollidiot",
+        "brüste",
+        "titten",
+        "scheiße"
+    }
+    local to_verify = string.lower(text)
+    for k, disallowed_word in ipairs(filter) do
+        if string.match(to_verify, disallowed_word) then
+            local from, to = string.find(to_verify, string.match(to_verify, disallowed_word))
+            local replace_word = string.sub(text, from, to)
+            text = string.gsub(text, replace_word, string.rep("*", to-from+1))
+        end
+    end    
+    return text
+end
+
 function signs_lib.update_sign(pos, fields)
 	local meta = minetest.get_meta(pos)
 
@@ -804,6 +930,7 @@ function signs_lib.update_sign(pos, fields)
 	end
 
 	local text = fields and fields.text or meta:get_string("text")
+	text = signs_lib.check_for_insults(text)
 	text = trim_input(text)
 
 	local owner = meta:get_string("owner")
